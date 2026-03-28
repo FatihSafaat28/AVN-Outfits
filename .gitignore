@@ -43,3 +43,5 @@ next-env.d.ts
 #agentkit
 .agent
 AVNStorePlan.md
+AGENTS.md
+CLAUDE.md
