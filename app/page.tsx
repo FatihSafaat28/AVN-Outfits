@@ -1,11 +1,14 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
-import { products } from "@/lib/data";
+import { useStore } from "@/store/useStore";
 import ProductCard from "@/components/product/ProductCard";
 import Button from "@/components/ui/Button";
 import { ArrowRight } from "lucide-react";
 
 export default function Home() {
+  const { products } = useStore();
   const featuredProducts = products.slice(0, 4);
 
   return (
@@ -38,6 +41,7 @@ export default function Home() {
               src="https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=1200&q=80"
               alt="Hero Image"
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
               priority
             />

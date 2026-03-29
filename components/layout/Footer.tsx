@@ -17,6 +17,7 @@ const Footer = () => {
             <Link href="/store" className="hover:text-black transition-colors">Store</Link>
             <Link href="/about" className="hover:text-black transition-colors">About Us</Link>
             <Link href="/contact" className="hover:text-black transition-colors">Contact</Link>
+            <Link href="/admin" className="hover:text-black transition-colors">Admin</Link>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">

@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 const CheckoutPage = () => {
   const router = useRouter();
-  const { items, getTotalPrice, clearCart } = useCartStore();
+  const { items, getTotalPrice } = useCartStore();
   const [isLoading, setIsLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('card');
 
@@ -19,8 +19,7 @@ const CheckoutPage = () => {
     
     // 2-second loading state
     setTimeout(() => {
-      setIsLoading(false);
-      clearCart();
+      // Don't clear cart here to avoid "cart empty" flash on this page
       router.push('/success');
     }, 2000);
   };

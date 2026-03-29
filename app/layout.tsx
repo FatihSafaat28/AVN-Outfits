@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   description: "Premium men's clothing brand focusing on quality and minimalist fashion.",
 };
 
+import ConditionalLayout from "@/components/layout/ConditionalLayout";
+import SessionChecker from "@/components/layout/SessionChecker";
+import ToastContainer from "@/components/ui/ToastContainer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,12 +35,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white">
-        <Navbar />
-        <CartDrawer />
-        <main className="flex-grow pt-16">
+        <SessionChecker />
+        <ToastContainer />
+        <ConditionalLayout>
           {children}
-        </main>
-        <Footer />
+        </ConditionalLayout>
       </body>
     </html>
   );

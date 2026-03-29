@@ -10,6 +10,7 @@ const AboutPage = () => {
           src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1600&q=80"
           alt="Brand Office"
           fill
+          sizes="100vw"
           className="object-cover grayscale"
           priority
         />
@@ -43,6 +44,7 @@ const AboutPage = () => {
                 src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=800&q=80"
                 alt="Fabric Detail"
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover p-4"
               />
             </div>

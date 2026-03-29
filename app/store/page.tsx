@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { products } from '@/lib/data';
+import { useStore } from '@/store/useStore';
 import ProductCard from '@/components/product/ProductCard';
 
-const categories = ['All', 'Kaos', 'Kemeja', 'Celana Panjang', 'Celana Pendek'];
-
 const StorePage = () => {
+  const { products, categories: storeCategories } = useStore();
   const [activeCategory, setActiveCategory] = useState('All');
+
+  const categories = ['All', ...storeCategories];
 
   const filteredProducts = activeCategory === 'All' 
     ? products 

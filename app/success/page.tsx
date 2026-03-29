@@ -1,9 +1,20 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { CheckCircle, ArrowRight } from 'lucide-react';
+import { useCartStore } from '@/lib/store';
 
 const SuccessPage = () => {
+  const { clearCart } = useCartStore();
+
+  useEffect(() => {
+    // Clear the cart when the user arrives at the success page
+    // This prevents the "empty cart" flash on the checkout page
+    clearCart();
+  }, [clearCart]);
+
   return (
     <div className="bg-white min-h-[80vh] flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full text-center space-y-10 animate-fadeIn">
