@@ -221,8 +221,9 @@ const ProductsPage = () => {
       </div>
 
       {/* Product List */}
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-6">
+        {/* Desktop Table View */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
@@ -279,20 +280,73 @@ const ProductsPage = () => {
               ))}
             </tbody>
           </table>
-          {filteredProducts.length === 0 && (
-            <div className="p-24 text-center">
-              <div className="bg-gray-50 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 text-gray-300">
-                <ShoppingBag size={32} />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 uppercase tracking-tight">No products found</h3>
-              <p className="text-gray-400 mt-2 font-medium">Try adjusting your filters or add a new collection.</p>
-            </div>
-          )}
         </div>
+
+        {/* Mobile/Tablet Card View */}
+        <div className="lg:hidden divide-y divide-gray-100">
+          {paginatedProducts.map((product) => (
+            <div key={product.id} className="p-5 flex gap-5 items-center hover:bg-gray-50/50 transition-colors active:bg-gray-50">
+              <div className="relative w-20 h-28 rounded-2xl overflow-hidden bg-gray-100 border border-gray-50 shrink-0 shadow-sm">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  sizes="80px"
+                  className="object-cover"
+                />
+              </div>
+              
+              <div className="flex-1 min-w-0 flex flex-col justify-between h-28 py-1">
+                <div>
+                  <div className="flex items-start justify-between gap-4">
+                    <h4 className="font-bold text-gray-900 text-sm line-clamp-2 uppercase tracking-tight leading-tight">
+                      {product.name}
+                    </h4>
+                    <div className="flex gap-1 shrink-0 opacity-70 hover:opacity-100 transition-all">
+                      <button
+                        onClick={() => handleOpenEditModal(product)}
+                        className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all"
+                        title="Edit product"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => setDeleteConfirmId(product.id)}
+                        className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all"
+                        title="Delete product"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+                  <span className="inline-block px-2 py-0.5 mt-2 rounded-full bg-gray-100 text-gray-500 text-[8px] font-bold uppercase tracking-widest">
+                    {product.category}
+                  </span>
+                </div>
+                
+                <div className="flex items-end justify-between">
+                  <span className="font-bold text-black tracking-tight text-sm">
+                    Rp {product.price.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {filteredProducts.length === 0 && (
+          <div className="p-24 text-center">
+            <div className="bg-gray-50 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 text-gray-300">
+              <ShoppingBag size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 uppercase tracking-tight">No products found</h3>
+            <p className="text-gray-400 mt-2 font-medium">Try adjusting your filters or add a new collection.</p>
+          </div>
+        )}
 
         {/* Pagination UI */}
         {totalPages > 1 && (
-          <div className="px-8 py-5 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+          <div className="px-6 md:px-8 py-5 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-gray-50/30">
             <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
               Page {currentPage} of {totalPages}
             </div>
@@ -335,44 +389,56 @@ const ProductsPage = () => {
 
       {/* Add/Edit Product Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fadeIn">
-          <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-slideUp">
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-              <h3 className="text-xl font-bold text-black uppercase tracking-tight">
+        <div 
+          className="fixed inset-0 z-9999 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4 animate-fadeIn"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div 
+            className="bg-white w-full max-w-2xl h-[92vh] sm:h-auto rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-slideUp flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between shrink-0 bg-white z-10">
+              <h3 className="text-xl font-bold text-black uppercase tracking-tight font-sans">
                 {editingId ? 'Edit Product' : 'Add New Product'}
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full transition-all">
-                <X size={20} />
+              <button 
+                onClick={() => setIsModalOpen(false)} 
+                className="p-2 hover:bg-gray-100 rounded-full transition-all group"
+              >
+                <X size={20} className="text-gray-400 group-hover:text-black" />
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-8 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Left Side: Image Upload */}
-                <div className="space-y-4">
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Product Image</label>
-                  <div 
-                    onClick={() => fileInputRef.current?.click()}
-                    className={`relative aspect-3/4 rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden flex flex-col items-center justify-center gap-4 ${
-                      formData.image ? 'border-transparent bg-gray-50' : 'border-gray-200 hover:border-black hover:bg-gray-50'
-                    }`}
-                  >
-                    {formData.image ? (
-                      <>
-                        <Image src={formData.image} alt="Preview" fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-bold uppercase tracking-widest">
-                          Change Image
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="p-5 bg-gray-100 rounded-2xl text-gray-400 shadow-sm">
-                          <ImageIcon size={32} />
-                        </div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Click to upload</p>
-                      </>
-                    )}
-                  </div>
+            {/* Modal Body - Scrollable */}
+            <div className="flex-1 overflow-y-auto p-6 sm:p-8 custom-scrollbar">
+              <form onSubmit={handleSubmit} className="space-y-8 pb-8 sm:pb-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Left Side: Image Upload */}
+                  <div className="space-y-4">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Product Image</label>
+                    <div 
+                      onClick={() => fileInputRef.current?.click()}
+                      className={`relative aspect-3/4 rounded-2xl border-2 border-dashed transition-all cursor-pointer overflow-hidden flex flex-col items-center justify-center gap-4 ${
+                        formData.image ? 'border-transparent bg-gray-50' : 'border-gray-200 hover:border-black hover:bg-gray-50'
+                      }`}
+                    >
+                      {formData.image ? (
+                        <>
+                          <Image src={formData.image} alt="Preview" fill sizes="(max-width: 768px) 100vw, 300px" className="object-cover" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-bold uppercase tracking-widest">
+                            Change Image
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="p-5 bg-gray-100 rounded-2xl text-gray-400 shadow-sm">
+                            <ImageIcon size={32} />
+                          </div>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Click to upload product image</p>
+                        </>
+                      )}
+                    </div>
                     <input 
                       type="file" 
                       ref={fileInputRef} 
@@ -398,74 +464,76 @@ const ProductsPage = () => {
                     )}
                   </div>
 
-                {/* Right Side: Form Fields */}
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest gap-2">
-                       <ShoppingBag size={14} className="inline mr-2" /> Product Name
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="e.g. Basic White Shirt"
-                      className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black transition-all font-medium"
-                      required
-                    />
-                  </div>
+                  {/* Right Side: Form Fields */}
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest flex items-center gap-2">
+                         <ShoppingBag size={14} className="text-gray-400" /> Product Name
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="e.g. Basic White Shirt"
+                        className="w-full px-4 py-4 rounded-xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all font-medium placeholder:text-gray-300"
+                        required
+                      />
+                    </div>
 
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest gap-2">
-                      <Tag size={14} className="inline mr-2" /> Category
-                    </label>
-                    <select
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black transition-all appearance-none bg-white font-medium"
-                      required
-                    >
-                      {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest flex items-center gap-2">
+                        <Tag size={14} className="text-gray-400" /> Category
+                      </label>
+                      <select
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        className="w-full px-4 py-4 rounded-xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all appearance-none font-medium text-gray-900"
+                        required
+                      >
+                        {categories.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </div>
 
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest gap-2">
-                      <DollarSign size={14} className="inline mr-2" /> Price (IDR)
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.price}
-                      onChange={(e) => {
-                        const rawValue = e.target.value.replace(/\D/g, ''); // Remove non-digits
-                        const formatted = rawValue ? Number(rawValue).toLocaleString('id-ID') : '';
-                        setFormData({ ...formData, price: formatted });
-                      }}
-                      placeholder="150.000"
-                      className="w-full px-4 py-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black transition-all font-medium"
-                      required
-                    />
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-400 uppercase mb-3 tracking-widest flex items-center gap-2">
+                        <DollarSign size={14} className="text-gray-400" /> Price (IDR)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.price}
+                        onChange={(e) => {
+                          const rawValue = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                          const formatted = rawValue ? Number(rawValue).toLocaleString('id-ID') : '';
+                          setFormData({ ...formData, price: formatted });
+                        }}
+                        placeholder="150.000"
+                        className="w-full px-4 py-4 rounded-xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all font-medium placeholder:text-gray-300"
+                        required
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="flex-1 py-4 border border-gray-200 text-gray-400 rounded-2xl font-bold tracking-widest uppercase text-xs hover:bg-gray-50 transition-all"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="flex-2 py-4 bg-black text-white rounded-2xl font-bold tracking-widest uppercase text-xs hover:bg-gray-800 transition-all shadow-xl shadow-black/10 active:scale-[0.98]"
-                >
-                  {editingId ? 'Save Changes' : 'Create Product'}
-                </button>
-              </div>
-            </form>
+                {/* Footer Actions */}
+                <div className="pt-8 flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 px-6 py-4 rounded-xl border border-gray-200 text-[10px] font-bold uppercase tracking-widest hover:bg-gray-50 transition-all font-sans"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-[2] px-6 py-4 rounded-xl bg-black text-white text-[10px] font-bold uppercase tracking-widest hover:bg-gray-800 transition-all shadow-xl shadow-black/10 font-sans"
+                  >
+                    {editingId ? 'Save Changes' : 'Create Product'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
